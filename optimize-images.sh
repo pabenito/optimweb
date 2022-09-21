@@ -1,7 +1,8 @@
 #!/bin/sh 
 
-source ./functions.sh
-
+selfpath=`realpath $0`
+selfdir=`dirname $selfpath`
+source "$selfdir/functions.sh"
 
 if [[ $* == *--keep* ]]
 then 

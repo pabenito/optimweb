@@ -2,9 +2,11 @@
 
 # Config
 
+selfpath=`realpath $0`
+selfdir=`dirname $selfpath`
+source "$selfdir/functions.sh"
+source "$selfdir/bach.sh"
 set -euo pipefail
-source ./bach.sh
-source ./functions.sh
 
 # Tests
 
