@@ -8,15 +8,15 @@ usage(){
 
 optimize_image(){
   local path=$1
-  local back_up=$2
+  local keep_original=$2
   
   local ext="${path##*.}"
   local path_without_ext=${path%.*}
   local path_jpg="$path_without_ext.jpg"
 
-  if [ $back_up = "true" ]
+  if [ $back_up = "true" ] && [ $ext = "jpg" ]
   then 
-    cp $path "${path_without_ext}_bak.$ext" 
+    cp $path "${path_without_ext}_original.jpg" 
   fi 
   
   if ! [ $ext = "jpg" ]
@@ -25,6 +25,11 @@ optimize_image(){
   fi 
 
   jpegoptim --quiet --all-progressive --strip-all $path_jpg 
+
+  if [ $back_up = "false" ] && [ $ext != "jpg" ]
+  then 
+    rm $path 
+  fi
 }
 
 count_lines(){
@@ -33,7 +38,7 @@ count_lines(){
 
 is_image_extension(){
   local ext=$1
-  if [ $ext = "jpg" ] || [ $ext = "jpeg" ] ||[ $ext = "png" ] ||[ $ext = "svg" ]
+  if [ $ext = "jpg" ] || [ $ext = "jpeg" ] ||[ $ext = "png" ] || [ $ext = "svg" ]
   then return 0 
   else return 1
   fi 
