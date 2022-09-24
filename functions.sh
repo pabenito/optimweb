@@ -1,7 +1,7 @@
 #!/bin/sh 
 usage(){
   command=$1
-  printf "$command [OPTION] [INPUT]\n\n"
+  printf "$command [OPTION] [INPUT]*\n\n"
   printf "[OPTION]:\n\t[-h]\tShow help.\n\t[-b]\tBack up original images.\n"
   printf "[INPUT]: There are some posible inputs\n\t[Image]\tA single image.\n\t[Pattern]\tA pattern matching some images, i.e. team*\n\t[Directory]\tA directory. If not specified the directory is the working directory.\n"
 }
@@ -48,27 +48,18 @@ is_image(){
   fi
 }
 
-get_dir(){
+check_dir_exists(){
   dir=$1
-  
-  if [ -z $dir ]
-  then 
-    dir="."
-  fi
-  
   if [ ! -d $dir ]
   then 
     printf "Error: The specified directory '$dir' does not exist\n" >&2
     exit 1
   fi
-
-  retval=$dir
 }
 
 get_all_images(){
   local dir=$1
-  image_paths=""
-  printf "Searching images...\n"
+  local image_paths=""
 
   for path in `find $dir -print`
   do 
@@ -85,6 +76,8 @@ get_all_images(){
     printf "There are no images in the specified directory '$dir'\n"
     exit 0
   fi
+
+  retval=$image_paths
 }
 
 optimize_images(){

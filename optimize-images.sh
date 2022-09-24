@@ -9,7 +9,7 @@ source "$selfdir/functions.sh"
 
 back_up="false"
 
-while getopts "hk" arg; do
+while getopts "hb" arg; do
   case $arg in
     h) # Display help.
       usage $selfname
@@ -17,18 +17,29 @@ while getopts "hk" arg; do
       ;;
     b) # Back up original image 
       back_up="true"
+      shift # It is supposed to be the first argument
       ;;
   esac
 done
 
-input=${@: -1}
-if is_image $input  
+if [ $# -eq 0 ] # Recursively in the working directory
 then 
-  image=$input
-  optimize_image $image $back_up
-  printf "$image successfully optimized\n"
-else 
-  get_dir $input # Return dir in $retval
-  get_all_images $retval
-  optimize_images $image_paths $back_up
+  get_all_images . # Return paths in $retval
+  optimize_images $retval $back_up
 fi
+
+printf "Searching images...\n"
+image_paths=""
+for input in $*
+do  # Multiple arguments or pattern
+  if is_image $input  
+  then 
+    image_paths="$image_paths$input\n"
+  else 
+    check_dir_exists $input
+    get_all_images $input # Return paths in $retval
+    image_paths="$image_paths$retval\n"
+  fi
+done 
+
+optimize_images $image_paths $back_up
