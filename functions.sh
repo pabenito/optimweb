@@ -65,15 +65,20 @@ check_dir_exists(){
 get_all_images(){
   local dir=$1
   local image_paths=""
-
-  for path in `find $dir -print`
-  do 
-    if is_image $path
+  
+  IFS_original=$IFS
+  IFS=$'\n'
+  
+  for element in `ls -1 $dir`
+  do
+    if is_image $element
     then 
-      image_paths+="$path\n"  
-    fi
+      image_paths+="$element\n"  
+    fi 
   done
- 
+
+  IFS=$IFS_original 
+
   count_lines $image_paths
   local num_of_images=$?
   if [ $num_of_images -le 0 ]
