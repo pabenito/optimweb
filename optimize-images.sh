@@ -29,7 +29,6 @@ while getopts "hkq:" arg; do
 done
 
 input=${@: -1}
-echo $input
 if is_image $input  
 then 
   image=$input

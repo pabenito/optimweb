@@ -63,7 +63,6 @@ get_dir(){
 
 get_all_images(){
   local dir=$1
-  echo "Dir: $dir"  
   image_paths=""
   printf "Searching images...\n"
 
