@@ -7,16 +7,16 @@ selfname=${selffile%.*}
 
 source "$selfdir/functions.sh"
 
-back_up="false"
+keep_original="false"
 
-while getopts "hb" arg; do
+while getopts "hk" arg; do
   case $arg in
     h) # Display help.
       usage $selfname
       exit 0
       ;;
-    b) # Back up original image 
-      back_up="true"
+    k) # Keep original image 
+      keep_original="true"
       shift # It is supposed to be the first argument
       ;;
   esac
@@ -28,7 +28,7 @@ if [ $# -eq 0 ] # Recursively in the working directory
 then 
   get_all_images . # Return paths in $retval
   echo $retval 
-  optimize_images $retval $back_up
+  optimize_images $retval $keep_original
 else
   image_paths=""
   for input in $*
@@ -42,5 +42,5 @@ else
       image_paths="$image_paths$retval\n"
     fi
   done 
-  optimize_images $image_paths $back_up
+  optimize_images $image_paths $keep_original
 fi 

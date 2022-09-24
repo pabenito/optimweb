@@ -14,7 +14,7 @@ optimize_image(){
   local path_without_ext=${path%.*}
   local path_jpg="$path_without_ext.jpg"
 
-  if [ $back_up = "true" ] && [ $ext = "jpg" ]
+  if [ $keep_original = "true" ] && [ $ext = "jpg" ]
   then 
     cp $path "${path_without_ext}_original.jpg" 
   fi 
@@ -26,7 +26,7 @@ optimize_image(){
 
   jpegoptim --quiet --all-progressive --strip-all $path_jpg 
 
-  if [ $back_up = "false" ] && [ $ext != "jpg" ]
+  if [ $keep_original = "false" ] && [ $ext != "jpg" ]
   then 
     rm $path 
   fi
@@ -87,7 +87,7 @@ get_all_images(){
 
 optimize_images(){
   local image_paths=$1
-  local back_up=$2
+  local keep_original=$2
   
   count_lines $image_paths
   local num_of_images=$?
@@ -100,7 +100,7 @@ optimize_images(){
   for path in $image_paths
   do 
     printf "[$i/$num_of_images] $path\n"
-    optimize_image $path $back_up
+    optimize_image $path $keep_original
     local i=$((i+1))
   done
   
