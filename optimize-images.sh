@@ -7,23 +7,16 @@ selfname=${selffile%.*}
 
 source "$selfdir/functions.sh"
 
-quality=100 # Default quality  
+back_up="false"
 
-while getopts "hkq:" arg; do
+while getopts "hk" arg; do
   case $arg in
     h) # Display help.
       usage $selfname
       exit 0
       ;;
-    k) # Keep original image 
-      keep_original=0
-      ;;
-    q) # Specify image quality. Must be between 50 and 100
-      quality=${OPTARG}
-      if [ $quality -lt 50 -o $strength -gt 100 ]
-      then 
-        printf "Error. Image quality must be between 50 and 100." >&2 
-      fi
+    b) # Back up original image 
+      back_up="true"
       ;;
   esac
 done
@@ -32,11 +25,10 @@ input=${@: -1}
 if is_image $input  
 then 
   image=$input
-  printf "$image optimizing...\n"
-  optimize_image $image $quality $keep_original
+  optimize_image $image $back_up
   printf "$image successfully optimized\n"
 else 
-  get_dir $input 
+  get_dir $input # Return dir in $retval
   get_all_images $retval
-  optimize_images $image_paths $quality $keep_original
+  optimize_images $image_paths $back_up
 fi

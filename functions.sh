@@ -2,25 +2,29 @@
 usage(){
   command=$1
   printf "$command [OPTION] [INPUT]\n\n"
-  printf "[OPTION]:\n\t[-h]\tShow help.\n\t[-k]\tKeep original images\n\t[-q quality]\tSet image quality. Must be between 50 and 100.\n\n"
+  printf "[OPTION]:\n\t[-h]\tShow help.\n\t[-b]\tBack up original images.\n"
   printf "[INPUT]: There are some posible inputs\n\t[Image]\tA single image.\n\t[Pattern]\tA pattern matching some images, i.e. team*\n\t[Directory]\tA directory. If not specified the directory is the working directory.\n"
 }
 
 optimize_image(){
   local path=$1
-  local quality=$2
-  local keep_original=$3
+  local back_up=$2
+  
   local ext="${path##*.}"
-  if [[ $keep_original = 0 ]] && [[ $ext = "jpg" ]]
+  local path_without_ext=${path%.*}
+  local path_jpg="$path_without_ext.jpg"
+
+  if [ $back_up = "true" ]
   then 
-    local outupt="${path%.*}-optimized.jpg"
-    cp $path $outupt 
-    path=$outupt
+    cp $path "${path_without_ext}_bak.$ext" 
   fi 
-  mogrify -format jpg -sampling-factor 4:2:0 -strip -quality $quality -interlace line -colorspace RGB $path  
-  if ! [[ $keep_original = 0 ]] && ! [[ $ext = "jpg" ]]
-  then rm $path 
+  
+  if ! [ $ext = "jpg" ]
+  then 
+    convert $path $path_jpg # Imagemagick command 
   fi 
+
+  jpegoptim --quiet --all-progressive --strip-all $path_jpg 
 }
 
 count_lines(){
@@ -85,8 +89,7 @@ get_all_images(){
 
 optimize_images(){
   local image_paths=$1
-  local quality=$2
-  local keep_original=$3
+  local back_up=$2
   
   count_lines $image_paths
   local num_of_images=$?
@@ -99,7 +102,7 @@ optimize_images(){
   for path in $image_paths
   do 
     printf "[$i/$num_of_images] $path\n"
-    optimize_image $path $quality $keep_original
+    optimize_image $path $back_up
     local i=$((i+1))
   done
   
