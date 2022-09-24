@@ -57,10 +57,13 @@ get_dir(){
     printf "Error: The specified directory '$dir' does not exist\n" >&2
     exit 1
   fi
+
+  retval=$dir
 }
 
 get_all_images(){
   local dir=$1
+  echo "Dir: $dir"  
   image_paths=""
   printf "Searching images...\n"
 

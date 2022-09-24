@@ -28,7 +28,8 @@ while getopts "hkq:" arg; do
   esac
 done
 
-input=${!#}
+input=${@: -1}
+echo $input
 if is_image $input  
 then 
   image=$input
@@ -37,6 +38,6 @@ then
   printf "$image successfully optimized\n"
 else 
   get_dir $input 
-  get_all_images $dir
+  get_all_images $retval
   optimize_images $image_paths $quality $keep_original
 fi
