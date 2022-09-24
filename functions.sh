@@ -1,9 +1,15 @@
 #!/bin/sh 
+usage(){
+  command=$1
+  printf "$command [OPTION] [INPUT]\n\n"
+  printf "[OPTION]:\n\t[-h]\tShow help.\n\t[-k]\tKeep original images\n\t[-q quality]\tSet image quality. Must be between 50 and 100.\n\n"
+  printf "[INPUT]: There are some posible inputs\n\t[Image]\tA single image.\n\t[Pattern]\tA pattern matching some images, i.e. team*\n\t[Directory]\tA directory. If not specified the directory is the working directory.\n"
+}
 
-optimize_image()
-{
+optimize_image(){
   local path=$1
-  local keep_original=$2
+  local quality=$2
+  local keep_original=$3
   local ext="${path##*.}"
   if [[ $keep_original = 0 ]] && [[ $ext = "jpg" ]]
   then 
@@ -11,7 +17,7 @@ optimize_image()
     cp $path $outupt 
     path=$outupt
   fi 
-  mogrify -format jpg -sampling-factor 4:2:0 -strip -quality 85 -interlace line -colorspace RGB $path  
+  mogrify -format jpg -sampling-factor 4:2:0 -strip -quality $quality -interlace line -colorspace RGB $path  
   if ! [[ $keep_original = 0 ]] && ! [[ $ext = "jpg" ]]
   then rm $path 
   fi 
@@ -77,6 +83,9 @@ get_all_images(){
 
 optimize_images(){
   local image_paths=$1
+  local quality=$2
+  local keep_original=$3
+  
   count_lines $image_paths
   local num_of_images=$?
   local image_paths=`printf $image_paths`
@@ -88,7 +97,7 @@ optimize_images(){
   for path in $image_paths
   do 
     printf "[$i/$num_of_images] $path\n"
-    optimize_image $path $keep_original
+    optimize_image $path $quality $keep_original
     local i=$((i+1))
   done
   

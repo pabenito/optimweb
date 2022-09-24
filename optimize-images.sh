@@ -2,23 +2,41 @@
 
 selfpath=`realpath $0`
 selfdir=`dirname $selfpath`
+selffile=`basename $0`
+selfname=${selffile%.*}
+
 source "$selfdir/functions.sh"
 
-if [[ $* == *--keep* ]]
-then 
-  keep_original=0
-fi
+quality=100 # Default quality  
 
-if is_image $1 
+while getopts "hkq:" arg; do
+  case $arg in
+    h) # Display help.
+      usage $selfname
+      exit 0
+      ;;
+    k) # Keep original image 
+      keep_original=0
+      ;;
+    q) # Specify image quality. Must be between 50 and 100
+      quality=${OPTARG}
+      if [ $quality -lt 50 -o $strength -gt 100 ]
+      then 
+        printf "Error. Image quality must be between 50 and 100." >&2 
+      fi
+      ;;
+  esac
+done
+
+input=${!#}
+if is_image $input  
 then 
-  image=$1
+  image=$input
   printf "$image optimizing...\n"
-  optimize_image $image $keep_original
+  optimize_image $image $quality $keep_original
   printf "$image successfully optimized\n"
 else 
-  get_dir $1
+  get_dir $input 
   get_all_images $dir
-  optimize_images $image_paths $keep_original
+  optimize_images $image_paths $quality $keep_original
 fi
-
-
