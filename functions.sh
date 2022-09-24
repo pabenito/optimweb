@@ -64,12 +64,22 @@ check_dir_exists(){
 
 get_all_images(){
   local dir=$1
+  local recursively=$2
+
   local image_paths=""
+  local element_paths=""
   
   IFS_original=$IFS
   IFS=$'\n'
+
+  if [ $recursively = "true" ]
+  then 
+    element_paths=`find $dir -print`
+  else 
+    element_paths=`ls -1 $dir`
+  fi
   
-  for element in `ls -1 $dir`
+  for element in $element_paths 
   do
     if is_image $element
     then 
