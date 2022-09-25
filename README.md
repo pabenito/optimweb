@@ -27,6 +27,12 @@ Keep original images.
 
 `optimweb -k [INPUT]*`
 
+### Recursive
+
+Optimeze images recursively in the specified directories.
+
+`optimweb -r [INPUT]*`
+
 ### Inputs
 
 #### Individually
@@ -48,3 +54,7 @@ Self directory do not need to be specified when is alone.
 #### Mixed
 
 `optimweb . Dowloads/image1.png dir1 image2.jpg`
+
+`optimweb -r Documents/dir1 image1.png dir2`
+
+**Warning**: The last one search recursively in 'Documents/dir1' and in 'dir2' also.  

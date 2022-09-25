@@ -2,7 +2,7 @@
 usage(){
   command=$1
   printf "$command [OPTION] [INPUT]*\n\n"
-  printf "[OPTION]:\n\t[-h]\tShow help.\n\t[-b]\tBack up original images.\n"
+  printf "[OPTION]:\n\t[-h]\tShow help.\n\t[-k]\tKeep original images.\n\t[-r]\t Search recursively for images\n"
   printf "[INPUT]: There are some posible inputs\n\t[Image]\tA single image.\n\t[Pattern]\tA pattern matching some images, i.e. team*\n\t[Directory]\tA directory. If not specified the directory is the working directory.\n"
 }
 
